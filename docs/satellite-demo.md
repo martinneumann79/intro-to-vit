@@ -22,8 +22,8 @@ make satellite-demo                   # fetch Stockholm via Sentinel Hub and dra
 make satellite-demo AREA=uppsala      # or: lund
 ```
 
-The map lands in `results/satellite/<area>/map.png`, with the class shares in `summary.md` and every
-patch's class and confidence in `land_use.json`.
+The map lands in `results/satellite/<area>/map.png`, with each class's share and mean confidence in
+`summary.md` and every patch's class and confidence in `land_use.json`.
 
 Other areas and dates:
 
@@ -101,7 +101,8 @@ most 2500 × 2500 pixels, which is 25 × 25 km at 10 m; the three predefined are
 
 **The map.** The scene is cut into non-overlapping 64 × 64 pixel patches (640 × 640 m), each is
 classified, and patches without data are skipped. The map shows each patch in its class colour on
-top of the image, with each class's share of the area in the legend.
+top of the image. The legend gives the model's mean confidence for each class, the average
+probability it gave its prediction on the patches of that class, with the most common class first.
 
 ## Results
 

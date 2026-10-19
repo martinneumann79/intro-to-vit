@@ -39,6 +39,13 @@ class LandUseMap:
         total = max(1, len(valid))
         return dict(sorted(((n, c / total) for n, c in counts.items() if c), key=lambda kv: -kv[1]))
 
+    def mean_confidence(self) -> dict[str, float]:
+        """Return the mean probability the model gave its prediction, per class, in the order of `shares`."""
+        return {
+            name: float(self.confidence[self.classes == self.class_names.index(name)].mean())
+            for name in self.shares()
+        }
+
 
 def format_share(share: float) -> str:
     """Format a share in Swedish style, e.g. 0.27 -> '27 %', and anything below 0.5 % as '<1 %'."""
@@ -77,10 +84,9 @@ def classify_scene(model: nn.Module, class_names: list[str], image: np.ndarray, 
 def format_summary(land_use: LandUseMap, title: str) -> str:
     """Render each class's share and the model's mean confidence as a Markdown table."""
     lines = [title, "", "| Klass | Andel av rutorna | Medelsäkerhet |", "|---|---|---|"]
+    confidences = land_use.mean_confidence()
     for name, share in land_use.shares().items():
-        index = land_use.class_names.index(name)
-        mean_confidence = float(land_use.confidence[land_use.classes == index].mean())
-        lines.append(f"| {SWEDISH_NAMES.get(name, name)} | {format_share(share)} | {format_share(mean_confidence)} |")
+        lines.append(f"| {SWEDISH_NAMES.get(name, name)} | {format_share(share)} | {format_share(confidences[name])} |")
     return "\n".join(lines)
 
 
@@ -95,7 +101,7 @@ def class_overlay(land_use: LandUseMap, alpha: float = 0.55) -> np.ndarray:
 def render_map(
     image: np.ndarray, land_use: LandUseMap, path: str | Path, title: str, subtitle: str, credit: str = ""
 ) -> Path:
-    """Save the scene and the ViT's land-use map side by side, with a legend of class shares.
+    """Save the scene and the ViT's land-use map side by side, with each class's mean confidence in the legend.
 
     `credit` is printed in the bottom-right corner, e.g. the attribution Copernicus data requires.
     """
@@ -113,18 +119,20 @@ def render_map(
         axes[1].imshow(class_overlay(land_use), extent=extent, interpolation="nearest")
         handles = [
             Patch(facecolor=CLASS_COLORS.get(name, "#000000"), edgecolor="none",
-                  label=f"{SWEDISH_NAMES.get(name, name)} · {format_share(share)}")
-            for name, share in land_use.shares().items()
+                  label=f"{SWEDISH_NAMES.get(name, name)} · {format_share(confidence)}")
+            for name, confidence in land_use.mean_confidence().items()
         ]
         legend = fig.legend(handles=handles, loc="lower center", ncol=min(5, len(handles)), frameon=False,
-                            fontsize=13 * PX * 1.4, bbox_to_anchor=(0.5, 0.01))
+                            fontsize=13 * PX * 1.4, bbox_to_anchor=(0.5, 0.01),
+                            title="Modellens medelsäkerhet per klass", title_fontsize=13 * PX * 1.4)
+        legend.get_title().set_color(colors["ink2"])
         for text in legend.get_texts():
             text.set_color(colors["ink"])
         fig.text(0.02, 0.955, title, fontsize=18 * PX * 1.4, fontweight="bold", color=colors["ink"])
         fig.text(0.02, 0.915, subtitle, fontsize=13 * PX * 1.4, color=colors["ink2"])
         if credit:
             fig.text(0.98, 0.012, credit, fontsize=11 * PX * 1.4, color=colors["muted"], ha="right")
-        fig.subplots_adjust(left=0.02, right=0.98, top=0.86, bottom=0.13, wspace=0.04)
+        fig.subplots_adjust(left=0.02, right=0.98, top=0.86, bottom=0.155, wspace=0.04)
         path = Path(path)
         fig.savefig(path, dpi=150, facecolor=colors["surface"])
         plt.close(fig)
