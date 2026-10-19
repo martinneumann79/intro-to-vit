@@ -1,16 +1,22 @@
 [project]
 name = "intro-to-vit"
 version = "0.1.0"
-description = "Compare Vision Transformers with CNNs on CIFAR-10"
+description = "Compare Vision Transformers with CNNs: training from scratch and robustness of pretrained models"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "gradio>=6.30.0",
+    "matplotlib>=3.11.2",
+    "timm>=1.0.30",
     "torch>=2.14.1",
     "torchvision>=0.29.1",
 ]
 
 [project.scripts]
 compare-models = "intro_to_vit.cli:main"
+robustness-benchmark = "intro_to_vit.robustness.cli:benchmark_main"
+robustness-demo = "intro_to_vit.robustness.cli:demo_main"
+robustness-download = "intro_to_vit.robustness.cli:download_main"
 
 [build-system]
 requires = ["hatchling"]
