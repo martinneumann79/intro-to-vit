@@ -9,6 +9,9 @@ experiments that show both sides of the trade-off:
    both trained on the same ImageNet images and equally accurate on clean images, are tested on
    images they never saw while noise, blur or occlusion is turned up. A browser demo lets you drag
    the noise level live.
+3. **A ViT on satellite data.** A pretrained ViT is fine-tuned on EuroSAT (Copernicus Sentinel-2
+   patches) and draws a land-use map of a fresh Sentinel-2 scene fetched through Sentinel Hub on
+   the Copernicus Data Space Ecosystem.
 
 ## Quickstart
 
@@ -24,9 +27,13 @@ make data-efficiency   # 10%, 25% and 100% of the data → results/data-efficien
 make download          # test images and model weights; afterwards everything runs offline
 make robustness        # five corruptions, ViT vs CNN → results/robustness/ (~5 min)
 make demo              # interactive demo on http://127.0.0.1:7860
+
+# Part 3: a ViT on Copernicus Sentinel-2 data (fetching needs a free Copernicus account)
+make satellite-train   # fine-tune the ViT on EuroSAT → results/satellite/vit-eurosat.pt (~8 min)
+make satellite-demo    # fetch Stockholm via Sentinel Hub and draw a land-use map (AREA=uppsala|lund)
 ```
 
-CIFAR-10, Imagenette and the pretrained weights are downloaded on first use. For custom runs see
+CIFAR-10, Imagenette, EuroSAT and the pretrained weights are downloaded on first use. For custom runs see
 `uv run compare-models --help` and `uv run robustness-benchmark --help`.
 
 **In short:** trained from scratch for 20 epochs, the CNN reaches 90.3% test accuracy on CIFAR-10
@@ -34,9 +41,10 @@ and the ViT 77.3%. Pretrained on ImageNet, both models recognise 81% of clean te
 Gaussian noise of σ = 0.3 the ViT still gets 62% right and the ResNet-50 43% (39% vs 26% on
 ImageNetV2's 10,000 images in all 1000 classes). A modern CNN
 (ConvNeXt) copes with noise as well as the ViT, though not with blur, and the training recipe
-matters as much as the architecture.
-See [docs/experiment.md](docs/experiment.md#sample-results) and
-[docs/robustness-demo.md](docs/robustness-demo.md#results).
+matters as much as the architecture. Fine-tuned on EuroSAT, the ViT recognises 99.0% of held-out
+Sentinel-2 patches. See [docs/experiment.md](docs/experiment.md#sample-results),
+[docs/robustness-demo.md](docs/robustness-demo.md#results) and
+[docs/satellite-demo.md](docs/satellite-demo.md#results).
 
 ## Docs
 
@@ -57,3 +65,5 @@ Technical docs:
 - [docs/experiment.md](docs/experiment.md): the CIFAR-10 experiment: setup, metrics, outputs
 - [docs/robustness-demo.md](docs/robustness-demo.md): the robustness benchmark and browser demo:
   models, test data, corruptions, results and code layout
+- [docs/satellite-demo.md](docs/satellite-demo.md): the ViT land-use map from Copernicus Sentinel-2
+  data: Sentinel Hub credentials, how it works, results and limitations

@@ -1,7 +1,9 @@
-.PHONY: install compare data-efficiency quick download robustness robustness-models robustness-v2 demo clean
+.PHONY: install compare data-efficiency quick download robustness robustness-models robustness-v2 demo \
+	satellite-train satellite-fetch satellite-map satellite-demo clean
 
 EPOCHS ?= 20
 ROBUSTNESS_PERTURBATIONS = noise salt-pepper blur occlusion occlusion-shifted
+AREA ?= stockholm
 
 # Install dependencies into .venv
 install:
@@ -43,6 +45,23 @@ robustness-v2:
 # Interactive browser demo on http://127.0.0.1:7860 (run `make robustness` first to show the graphs)
 demo:
 	uv run robustness-demo
+
+# --- Part 3: a ViT maps land use in Copernicus Sentinel-2 images ---
+
+# Fine-tune the ViT on EuroSAT, 27,000 Sentinel-2 patches (results/satellite/vit-eurosat.pt, ~8 min)
+satellite-train:
+	uv run satellite-train
+
+# Fetch a Sentinel-2 scene via Sentinel Hub; needs a free Copernicus Data Space account (docs/satellite-demo.md)
+satellite-fetch:
+	uv run satellite-fetch --area $(AREA)
+
+# Classify the fetched scene patch by patch and draw a land-use map (results/satellite/$(AREA)/map.png)
+satellite-map:
+	uv run satellite-map --area $(AREA)
+
+# Fetch and map in one go, e.g. make satellite-demo AREA=uppsala
+satellite-demo: satellite-fetch satellite-map
 
 # Remove experiment outputs (keeps the downloaded datasets in data/)
 clean:

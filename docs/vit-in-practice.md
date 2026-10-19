@@ -85,6 +85,9 @@ används sedan som "öga" i många olika tillämpningar.
 - **World Resources Institute med DINOv3.** Mäter trädhöjd från satellitbilder för att följa
   avskogning. Enligt Meta sjönk medelfelet i en region i Kenya från 4,1 till 1,2 meter jämfört
   med DINOv2. [Källa](https://ai.meta.com/dinov3/) · [Trädhöjdsmodellen på GitHub](https://github.com/facebookresearch/HighResCanopyHeight)
+- **Prova själv i det här repot.** En ViT finjusteras på EuroSAT, 27 000 Sentinel-2-bilder i tio
+  klasser, och ritar sedan en karta över markanvändningen i en färsk Sentinel-2-bild som hämtas
+  via Sentinel Hub hos Copernicus. Se [satellite-demo.md](satellite-demo.md).
 - **Aurora** (Microsoft, Nature 2025). Modell för hela jordsystemet byggd på en 3D Swin
   Transformer. Prognoser för väder, luftkvalitet, havsvågor och tropiska cykloner.
   [GitHub](https://github.com/microsoft/aurora)

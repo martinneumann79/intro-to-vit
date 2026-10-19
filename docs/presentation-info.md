@@ -254,6 +254,14 @@ ResNet-50 26 % ([graf](images/noise-accuracy-imagenetv2.png)).
 
 ![Träffsäkerhet med brus](images/noise-accuracy.png)
 
+**Del 3, valfri: ViT på satellitbilder.** En förtränad ViT finjusteras på EuroSAT, 27 000
+Sentinel-2-bilder från Copernicus i tio klasser som skog, åker, bostadsområde och vatten. Den
+känner igen 99,0 % av bilderna den inte tränats på. Sedan hämtar den en färsk Sentinel-2-bild via
+Sentinel Hub och klassar den ruta för ruta, 640 × 640 meter i taget. Detaljer i
+[satellite-demo.md](satellite-demo.md).
+
+![Markanvändning i Stockholm enligt ViT](images/satellite-stockholm-map.jpg)
+
 **Varför tål ViT brus bättre?** Forskning visar att self-attention fungerar som ett
 lågpassfilter, som jämnar ut snabba variationer mellan pixlar. Faltningslager fungerar
 tvärtom som högpassfilter och förstärker dem

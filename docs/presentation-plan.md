@@ -102,6 +102,18 @@ make demo          # öppnar appen på http://127.0.0.1:7860
 
 Vill du visa nyans 2 live: starta appen med `uv run robustness-demo --models vit convnext`.
 
+### Valfritt: ViT på satellitbilder (cirka 2 minuter)
+
+Passar bäst under användningsområden, vid jordobservation. Visa kartan som `make satellite-demo`
+gör, eller [images/satellite-stockholm-map.jpg](images/satellite-stockholm-map.jpg). Säg: "Samma
+sorts ViT, förtränad på vanliga foton, har finjusterats på drygt 21 000 Sentinel-2-bilder från
+Copernicus på åtta minuter. Den känner igen 99 % av de 5 400 bilder den inte sett. Här klassar den en färsk bild av
+Stockholm ruta för ruta: innerstaden, Värtahamnen, vattnet och Djurgården." Nämn också
+svagheten ärligt: rutor som blandar hus, vägar och grönska blir ofta "väg".
+
+Förbered med `make satellite-train` och `make satellite-demo` dagen innan. Hämtningen kräver ett
+gratis konto hos Copernicus Data Space Ecosystem, se [satellite-demo.md](satellite-demo.md).
+
 ## Vanliga frågor och svar
 
 **Är ViT alltid bättre än CNN?**

@@ -12,3 +12,6 @@ wheels/
 # Project
 data/
 results/
+
+# Secrets (Sentinel Hub credentials)
+.env
